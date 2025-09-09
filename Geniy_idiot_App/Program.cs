@@ -17,35 +17,13 @@ namespace GeniyIdiotApp
             var restart = true;
             while (restart)
             {
-                var countRightAnswers = 0;
-                var questionNumber = DiagnosticTestResources.GetMixiForQuestion();
-                for (var i = 0 ; i < DiagnosticTestResources.Questions.Count ; i++)
-                {
-                    Console.WriteLine($"Вопрос номер: {i + 1}");
-                    var numberQuestion = questionNumber[i];
-                    Console.WriteLine(DiagnosticTestResources.Questions[numberQuestion]);
-                    var returnNumberUser = true;
-                    while (returnNumberUser)
-                    {
-                        try
-                        {
-                            if (DiagnosticTestResources.Answers[numberQuestion] == short.Parse(Console.ReadLine()))
-                                countRightAnswers++;
-                            returnNumberUser = false;
-                        }
-                        catch
-                        {
-                            Console.WriteLine($"{userName}, вы ввели букву, а нужно число, введите корректное число не длинее 6 знаков.");
-                            returnNumberUser = true;
-                        }
-                    }
-                }
-                Console.WriteLine($"{userName}, вы ответили верно на {countRightAnswers} вопросов.\nВаш результат {DiagnosticTestResources.Diagnoses[countRightAnswers]}.");
+                var score = RunTest(userName);
+                ShowResults(userName, score);
                 Console.WriteLine($"{userName} хотите пройти тест еще раз?");
                 restart = DiagnosticTestResources.GetRestartQuestion(Console.ReadLine(), userName);
             }
         }
-        public static string GetValidUserName()
+        static string GetValidUserName()
         {
             while (true)
             {
@@ -61,6 +39,49 @@ namespace GeniyIdiotApp
                 }
             }
         }
-    }
+        static int RunTest(string userName)
+        {
+            var countRightAnswers = 0;
+            var questionOrder = DiagnosticTestResources.GetMixiForQuestion();
 
+            for (var i = 0 ; i < DiagnosticTestResources.Questions.Count ; i++)
+            {
+                var questionIndex = questionOrder[i];
+
+                Console.WriteLine($"Вопрос номер: {i + 1}");
+                Console.WriteLine(DiagnosticTestResources.Questions[questionIndex]);
+
+                countRightAnswers += ProcessAnswer(userName, questionIndex);
+            }
+
+            return countRightAnswers;
+        }
+        static int ProcessAnswer(string userName, int questionIndex)
+        {
+            while (true)
+            {
+                try
+                {
+                    var userInput = Console.ReadLine();
+
+                    if (short.TryParse(userInput, out var answer))
+                    {
+                        return answer == DiagnosticTestResources.Answers[questionIndex] ? 1 : 0;
+                    }
+
+                    Console.WriteLine($"{userName}, вы ввели букву, а нужно число, введите корректное число не длинее 6 знаков.");
+                }
+                catch
+                {
+                    Console.WriteLine($"{userName}, произошла ошибка. Попробуйте еще раз.");
+                }
+            }
+        }
+        static void ShowResults (string userName, int answer)
+        {
+            Console.WriteLine($"{userName}, вы ответили верно на {answer} вопросов.");
+            Console.WriteLine($"Ваш результат: {DiagnosticTestResources.Diagnoses[answer]}");
+        }
+
+    }
 }
