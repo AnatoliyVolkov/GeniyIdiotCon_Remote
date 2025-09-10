@@ -36,19 +36,19 @@ namespace GeniyIdiotApp
             }
             return questionIndexes;
         }
-        public static string UserInput(string name)
-        {
 
-            if (string.IsNullOrEmpty(name) || short.TryParse(name, out var number))
+        public static string GetUserInput(string name)
+        {
+            if (string.IsNullOrEmpty(name) || short.TryParse(name, out _))
             {
                 throw new Exception("Нельзя вводить числа и оставлять поле пустым, будьте внимательней");
             }
             else
             {
-                var nameUser = name.Substring(0, 1).ToUpper() + name.Substring(1).ToLower();
-                return nameUser;
+                return  name.Substring(0, 1).ToUpper() + name.Substring(1).ToLower();
             }
         }
+
         public static bool GetRestartQuestion(string answer, string name)
         {
             if (answer != "Да" && answer != "дА" && answer != "да" && answer != "ДА")
@@ -57,8 +57,6 @@ namespace GeniyIdiotApp
                 return false;
             }
             else return true;
-
         }
     }
-
 }

@@ -23,6 +23,7 @@ namespace GeniyIdiotApp
                 restart = DiagnosticTestResources.GetRestartQuestion(Console.ReadLine(), userName);
             }
         }
+
         static string GetValidUserName()
         {
             while (true)
@@ -30,7 +31,7 @@ namespace GeniyIdiotApp
                 try
                 {
                     var name = Console.ReadLine();
-                    return DiagnosticTestResources.UserInput(name);
+                    return DiagnosticTestResources.GetUserInput(name);
                 }
                 catch (Exception ex)
                 {
@@ -39,6 +40,7 @@ namespace GeniyIdiotApp
                 }
             }
         }
+
         static int RunTest(string userName)
         {
             var countRightAnswers = 0;
@@ -51,12 +53,13 @@ namespace GeniyIdiotApp
                 Console.WriteLine($"Вопрос номер: {i + 1}");
                 Console.WriteLine(DiagnosticTestResources.Questions[questionIndex]);
 
-                countRightAnswers += ProcessAnswer(userName, questionIndex);
+                countRightAnswers += GetProcessAnswer(userName, questionIndex);
             }
 
             return countRightAnswers;
         }
-        static int ProcessAnswer(string userName, int questionIndex)
+
+        static int GetProcessAnswer(string userName, int questionIndex)
         {
             while (true)
             {
@@ -77,11 +80,11 @@ namespace GeniyIdiotApp
                 }
             }
         }
+
         static void ShowResults (string userName, int answer)
         {
             Console.WriteLine($"{userName}, вы ответили верно на {answer} вопросов.");
             Console.WriteLine($"Ваш результат: {DiagnosticTestResources.Diagnoses[answer]}");
         }
-
     }
 }
