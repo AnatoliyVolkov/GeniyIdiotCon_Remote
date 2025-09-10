@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GeniyIdiotApp
 {
@@ -25,7 +26,7 @@ namespace GeniyIdiotApp
         "Гений",
     };
 
-        public static List<int> GetMixiForQuestion()
+        public static List<int> ShuffleTestQuestions()
         {
             var randomQuestion = new Random();
             var questionIndexes = Enumerable.Range(0, Questions.Count).ToList();
@@ -37,7 +38,7 @@ namespace GeniyIdiotApp
             return questionIndexes;
         }
 
-        public static string GetUserInput(string name)
+        public static string CheckUsernameEntry(string name)
         {
             if (string.IsNullOrEmpty(name) || short.TryParse(name, out _))
             {
@@ -49,7 +50,7 @@ namespace GeniyIdiotApp
             }
         }
 
-        public static bool GetRestartQuestion(string answer, string name)
+        public static bool GetUserConfirm(string answer, string name)
         {
             if (answer != "Да" && answer != "дА" && answer != "да" && answer != "ДА")
             {

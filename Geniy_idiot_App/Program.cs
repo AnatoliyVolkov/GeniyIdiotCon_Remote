@@ -2,7 +2,10 @@
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Timers;
 using System.Xml.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GeniyIdiotApp
 {
@@ -20,7 +23,7 @@ namespace GeniyIdiotApp
                 var score = RunTest(userName);
                 ShowResults(userName, score);
                 Console.WriteLine($"{userName} хотите пройти тест еще раз?");
-                restart = DiagnosticTestResources.GetRestartQuestion(Console.ReadLine(), userName);
+                restart = DiagnosticTestResources.GetUserConfirm(Console.ReadLine(), userName);
             }
         }
 
@@ -31,7 +34,7 @@ namespace GeniyIdiotApp
                 try
                 {
                     var name = Console.ReadLine();
-                    return DiagnosticTestResources.GetUserInput(name);
+                    return DiagnosticTestResources.CheckUsernameEntry(name);
                 }
                 catch (Exception ex)
                 {
@@ -44,7 +47,7 @@ namespace GeniyIdiotApp
         static int RunTest(string userName)
         {
             var countRightAnswers = 0;
-            var questionOrder = DiagnosticTestResources.GetMixiForQuestion();
+            var questionOrder = DiagnosticTestResources.ShuffleTestQuestions();
 
             for (var i = 0 ; i < DiagnosticTestResources.Questions.Count ; i++)
             {
@@ -52,26 +55,23 @@ namespace GeniyIdiotApp
 
                 Console.WriteLine($"Вопрос номер: {i + 1}");
                 Console.WriteLine(DiagnosticTestResources.Questions[questionIndex]);
-
-                countRightAnswers += GetProcessAnswer(userName, questionIndex);
+                countRightAnswers += CheckAnswerUserQuestion(userName, questionIndex);
             }
 
             return countRightAnswers;
         }
 
-        static int GetProcessAnswer(string userName, int questionIndex)
+        static int CheckAnswerUserQuestion(string userName, int questionIndex)
         {
             while (true)
             {
                 try
                 {
                     var userInput = Console.ReadLine();
-
                     if (short.TryParse(userInput, out var answer))
                     {
                         return answer == DiagnosticTestResources.Answers[questionIndex] ? 1 : 0;
                     }
-
                     Console.WriteLine($"{userName}, вы ввели букву, а нужно число, введите корректное число не длинее 6 знаков.");
                 }
                 catch
@@ -81,10 +81,14 @@ namespace GeniyIdiotApp
             }
         }
 
-        static void ShowResults (string userName, int answer)
+        static void ShowResults(string userName, int answer)
         {
             Console.WriteLine($"{userName}, вы ответили верно на {answer} вопросов.");
             Console.WriteLine($"Ваш результат: {DiagnosticTestResources.Diagnoses[answer]}");
         }
     }
 }
+
+
+
+
